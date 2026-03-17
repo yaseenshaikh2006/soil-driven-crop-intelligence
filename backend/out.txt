@@ -1,0 +1,115 @@
+Testing: 'Nitrogen (mg/kg) 49'
+{
+  "N": 49.0,
+  "P": null,
+  "K": null,
+  "temperature": null,
+  "humidity": null,
+  "ph": null,
+  "rainfall": null
+}
+----------------------------------------
+Testing: 'NITRATE-N (FIA) 49'
+{
+  "N": 49.0,
+  "P": null,
+  "K": null,
+  "temperature": null,
+  "humidity": null,
+  "ph": null,
+  "rainfall": null
+}
+----------------------------------------
+Testing: 'Nitrogen (ppm) : 49.5'
+{
+  "N": 49.5,
+  "P": null,
+  "K": null,
+  "temperature": null,
+  "humidity": null,
+  "ph": null,
+  "rainfall": null
+}
+----------------------------------------
+Testing: 'PHOSPHORUS P1 (WEAK BRAY) 1:7 58'
+{
+  "N": null,
+  "P": 58.0,
+  "K": null,
+  "temperature": null,
+  "humidity": null,
+  "ph": null,
+  "rainfall": null
+}
+----------------------------------------
+Testing: 'POTASSIUM 320 VH'
+{
+  "N": null,
+  "P": null,
+  "K": 320.0,
+  "temperature": null,
+  "humidity": null,
+  "ph": null,
+  "rainfall": null
+}
+----------------------------------------
+Testing: 'pH 5.7'
+{
+  "N": null,
+  "P": null,
+  "K": null,
+  "temperature": null,
+  "humidity": null,
+  "ph": 5.7,
+  "rainfall": null
+}
+----------------------------------------
+Testing: 'SOIL pH BUFFER INDEX 1:1 5.7 6.6'
+{
+  "N": null,
+  "P": null,
+  "K": null,
+  "temperature": null,
+  "humidity": null,
+  "ph": 5.7,
+  "rainfall": null
+}
+----------------------------------------
+Testing: 'Soil pH 59'
+{
+  "N": null,
+  "P": null,
+  "K": null,
+  "temperature": null,
+  "humidity": null,
+  "ph": 5.9,
+  "rainfall": null
+}
+----------------------------------------
+Testing: 'Nitrogen         ( ppm )
+
+    49'
+{
+  "N": 49.0,
+  "P": null,
+  "K": null,
+  "temperature": null,
+  "humidity": null,
+  "ph": null,
+  "rainfall": null
+}
+----------------------------------------
+Testing: 'NITRATE-N (FIA)
+SURFACE SUBSOIL
+ppm lbs/A
+49 88'
+{
+  "N": 49.0,
+  "P": null,
+  "K": null,
+  "temperature": null,
+  "humidity": null,
+  "ph": null,
+  "rainfall": null
+}
+----------------------------------------
