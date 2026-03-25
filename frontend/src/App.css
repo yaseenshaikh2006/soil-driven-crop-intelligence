@@ -24,7 +24,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #e8f5e9 0%, #f0f9ff 50%, #e0f2f1 100%);
+  background: url('./CROP BACK IMG.jpg') center/cover no-repeat fixed;
   background-attachment: fixed;
   min-height: 100vh;
   color: var(--dark-gray);
@@ -398,7 +398,7 @@ nav {
 
 /* ===== RESULT CARDS ===== */
 .result-card {
-  background: var(--white);
+  background-color: var(--white);
   border-radius: 16px;
   padding: 35px;
   box-shadow: var(--shadow);

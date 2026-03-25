@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./App.css";
+import cropBg from "./crop-bg.jpg";
 
 function FertilizerPage() {
   const [formData, setFormData] = useState({
@@ -183,7 +184,12 @@ function FertilizerPage() {
           </div>
 
           {fertilizerResult && (
-            <div className="result-card">
+            <div className="result-card" style={{
+              backgroundImage: `linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(232, 245, 233, 0.88) 100%), url(${cropBg})`,
+              backgroundSize: 'auto, cover',
+              backgroundPosition: 'center',
+              backgroundAttachment: 'fixed'
+            }}>
               <div className="result-header">
                 <h3 className="result-title fertilizer">Fertilizer Recommendation</h3>
               </div>
