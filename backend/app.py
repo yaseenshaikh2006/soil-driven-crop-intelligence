@@ -164,6 +164,31 @@ def fertilizer():
         app.logger.exception("Fertilizer recommendation error")
         return jsonify({"error": "Fertilizer recommendation failed", "details": str(e)}), 400
 
+@app.route("/extract", methods=["POST"])
+def extract():
+    """Endpoint for uploading CSV, PDF, or Image files to extract soil and weather inputs."""
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file uploaded in the request. Please provide a file."}), 400
+            
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No selected file. Please upload a valid file."}), 400
+            
+        from data_extractor import process_file
+        extracted_data = process_file(file)
+        
+        return jsonify({
+            "message": "Data extracted successfully",
+            "data": extracted_data
+        })
+    except ValueError as ve:
+        # Return a 400 request error for validation parsing issues
+        return jsonify({"error": str(ve)}), 400
+    except Exception as e:
+        app.logger.exception("Data extraction error")
+        return jsonify({"error": "Data extraction failed", "details": str(e)}), 500
+
 if __name__ == "__main__":
     app.run(debug=True)
 

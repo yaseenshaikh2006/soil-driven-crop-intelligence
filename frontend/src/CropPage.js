@@ -18,11 +18,22 @@ function CropPage() {
   const [probs, setProbs] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState("");
 
   const handleChange = (e) => {
+    let { name, value } = e.target;
+    
+    // Prevent pH from going above 14
+    if (name === "ph") {
+      const numValue = Number(value);
+      if (numValue > 14) value = "14";
+      if (numValue < 0) value = "0";
+    }
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
     setError("");
   };
@@ -54,6 +65,50 @@ function CropPage() {
       setError("Backend not connected or invalid data!");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const fileExt = file.name.split('.').pop().toLowerCase();
+    if (!['csv', 'pdf', 'png', 'jpg', 'jpeg'].includes(fileExt)) {
+      setError("Please upload a CSV, PDF, or Image file.");
+      return;
+    }
+
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    setUploading(true);
+    setError("");
+    setUploadSuccess("");
+
+    try {
+      const res = await axios.post("http://127.0.0.1:5000/extract", uploadData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+      
+      const extracted = res.data.data;
+      
+      // Update formData with extracted values (only values that are not null)
+      setFormData(prev => {
+        const newData = { ...prev };
+        Object.keys(extracted).forEach(key => {
+          if (extracted[key] !== null && newData[key] !== undefined) {
+             newData[key] = extracted[key];
+          }
+        });
+        return newData;
+      });
+
+      setUploadSuccess("Data extracted successfully! You can manually fill in any missing fields.");
+      e.target.value = null; // Reset input
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to extract data from file.");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -92,6 +147,37 @@ function CropPage() {
           <div className="form-card">
             <h2 className="form-title">Recommended Crop</h2>
 
+            {/* Upload Section */}
+            <div className="upload-section">
+              <div className="upload-card">
+                <div className="upload-icon-container">
+                  <span className="upload-icon">📄</span>
+                </div>
+                <div className="upload-content">
+                  <h3 className="upload-title">Auto-fill via Document Scan</h3>
+                  <p className="upload-subtitle">Upload a CSV, report PDF, or image to extract data.</p>
+                  
+                  <label className="upload-btn">
+                    <input 
+                      type="file" 
+                      accept=".csv,.pdf,.png,.jpg,.jpeg" 
+                      onChange={handleFileUpload} 
+                      style={{display: 'none'}} 
+                      disabled={uploading}
+                    />
+                    {uploading ? (
+                      <span className="uploading-text"><span className="spinner"></span>Extracting data...</span>
+                    ) : (
+                      <span className="upload-text">Choose File</span>
+                    )}
+                  </label>
+                </div>
+              </div>
+              
+              {uploadSuccess && <div className="success-message">{uploadSuccess}</div>}
+              {error && <div className="error-message">{error}</div>}
+            </div>
+
             {/* Soil Parameters Section */}
             <div className="form-section">
               <div className="section-header">
@@ -114,6 +200,8 @@ function CropPage() {
                         value={formData[field.name]}
                         onChange={handleChange}
                         className="form-input"
+                        min={field.name === "ph" ? "0" : undefined}
+                        max={field.name === "ph" ? "14" : undefined}
                       />
                       <span className="input-unit">{field.unit}</span>
                     </div>
@@ -169,8 +257,6 @@ function CropPage() {
                 ))}
               </div>
             </div>
-
-            {error && <div className="error-message">{error}</div>}
 
             <div className="button-row">
               <button
