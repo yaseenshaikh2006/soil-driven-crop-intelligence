@@ -1,0 +1,191 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+// the translations
+// (tip: move them in a JSON file and import them,
+// or even better, manage them separated from your code: https://react.i18next.com/guides/multiple-translation-files)
+const resources = {
+  en: {
+    translation: {
+      "Crop Intelligence System": "Crop Intelligence System",
+      "Optimize your farming with AI-powered recommendations": "Optimize your farming with AI-powered recommendations",
+      "Recommended Crop": "Recommended Crop",
+      "Recommended Fertilizer": "Recommended Fertilizer",
+      "Language": "Language",
+      "Please fill in all fields": "Please fill in all fields",
+      "Backend not connected or invalid data!": "Backend not connected or invalid data!",
+      "Please upload a CSV, PDF, or Image file.": "Please upload a CSV, PDF, or Image file.",
+      "Extracting data...": "Extracting data...",
+      "Choose File": "Choose File",
+      "Data extracted successfully! You can manually fill in any missing fields.": "Data extracted successfully! You can manually fill in any missing fields.",
+      "Failed to extract data from file.": "Failed to extract data from file.",
+      "Optimal pH ✅": "Optimal pH ✅",
+      "Slightly Acidic ⚠️": "Slightly Acidic ⚠️",
+      "Slightly Alkaline ⚠️": "Slightly Alkaline ⚠️",
+      "Outside Range🔴": "Outside Range🔴",
+      "Ideal Humidity ✅": "Ideal Humidity ✅",
+      "Check Humidity ⚠️": "Check Humidity ⚠️",
+      "Nitrogen (N)": "Nitrogen (N)",
+      "Phosphorus (P)": "Phosphorus (P)",
+      "Potassium (K)": "Potassium (K)",
+      "pH Level": "pH Level",
+      "Temperature": "Temperature",
+      "Humidity": "Humidity",
+      "Rainfall": "Rainfall",
+      "Auto-fill via Document Scan": "Auto-fill via Document Scan",
+      "Upload a CSV, report PDF, or image to extract data.": "Upload a CSV, report PDF, or image to extract data.",
+      "Soil Parameters": "Soil Parameters",
+      "Environmental Parameters": "Environmental Parameters",
+      "Enter value": "Enter value",
+      "Analyzing...": "Analyzing...",
+      "Get Crop Recommendation": "Get Crop Recommendation",
+      "Based on your soil nutrients and environmental conditions, this crop is recommended for optimal yield and maximum profitability.": "Based on your soil nutrients and environmental conditions, this crop is recommended for optimal yield and maximum profitability.",
+      "Crop Suitability Score": "Crop Suitability Score",
+      "Strong match": "Strong match",
+      "Prediction Probabilities": "Prediction Probabilities",
+      "Fertilizer endpoint not reachable or returned error.": "Fertilizer endpoint not reachable or returned error.",
+      "Outside Range 🔴": "Outside Range 🔴",
+      "Target Crop": "Target Crop",
+      "What crop do you want to grow?": "What crop do you want to grow?",
+      "e.g. Rice, Wheat, Cotton (Optional)": "e.g. Rice, Wheat, Cotton (Optional)",
+      "Provide N, P or K to enable fertilizer recommendation": "Provide N, P or K to enable fertilizer recommendation",
+      "Get fertilizer recommendation": "Get fertilizer recommendation",
+      "Calculating...": "Calculating...",
+      "Get Fertilizer Recommendation": "Get Fertilizer Recommendation",
+      "Fertilizer Recommendation": "Fertilizer Recommendation",
+      "Crop:": "Crop:",
+      "Baseline Requirements (kg/ha)": "Baseline Requirements (kg/ha)",
+      "Current Soil (Measured)": "Current Soil (Measured)",
+      "Suggested Fertilizer Additions": "Suggested Fertilizer Additions",
+      "kg/ha": "kg/ha"
+    }
+  },
+  hi: {
+    translation: {
+      "Crop Intelligence System": "फसल बुद्धिमत्ता प्रणाली",
+      "Optimize your farming with AI-powered recommendations": "एआई-संचालित सिफारिशों के साथ अपनी खेती को अनुकूलित करें",
+      "Recommended Crop": "अनुशंसित फसल",
+      "Recommended Fertilizer": "अनुशंसित उर्वरक",
+      "Language": "भाषा",
+      "Please fill in all fields": "कृपया सभी फ़ील्ड भरें",
+      "Backend not connected or invalid data!": "बैकएंड कनेक्ट नहीं है या अमान्य डेटा!",
+      "Please upload a CSV, PDF, or Image file.": "कृपया CSV, PDF, या छवि फ़ाइल अपलोड करें।",
+      "Extracting data...": "डेटा निकाला जा रहा है...",
+      "Choose File": "फ़ाइल चुनें",
+      "Data extracted successfully! You can manually fill in any missing fields.": "डेटा सफलतापूर्वक निकाला गया! आप मैन्युअल रूप से कोई भी लापता फ़ील्ड भर सकते हैं।",
+      "Failed to extract data from file.": "फ़ाइल से डेटा निकालने में विफल।",
+      "Optimal pH ✅": "इष्टतम pH ✅",
+      "Slightly Acidic ⚠️": "थोड़ा अम्लीय ⚠️",
+      "Slightly Alkaline ⚠️": "थोड़ा क्षारीय ⚠️",
+      "Outside Range🔴": "सीमा से बाहर🔴",
+      "Ideal Humidity ✅": "आदर्श नमी ✅",
+      "Check Humidity ⚠️": "नमी जांचें ⚠️",
+      "Nitrogen (N)": "नाइट्रोजन (N)",
+      "Phosphorus (P)": "फॉस्फोरस (P)",
+      "Potassium (K)": "पोटेशियम (K)",
+      "pH Level": "pH स्तर",
+      "Temperature": "तापमान",
+      "Humidity": "नमी",
+      "Rainfall": "वर्षा",
+      "Auto-fill via Document Scan": "दस्तावेज़ स्कैन के माध्यम से ऑटो-फिल",
+      "Upload a CSV, report PDF, or image to extract data.": "डेटा निकालने के लिए CSV, रिपोर्ट PDF, या छवि अपलोड करें।",
+      "Soil Parameters": "मिट्टी के पैरामीटर",
+      "Environmental Parameters": "पर्यावरणीय पैरामीटर",
+      "Enter value": "मान दर्ज करें",
+      "Analyzing...": "विश्लेषण हो रहा है...",
+      "Get Crop Recommendation": "फसल सिफारिश प्राप्त करें",
+      "Based on your soil nutrients and environmental conditions, this crop is recommended for optimal yield and maximum profitability.": "आपकी मिट्टी की पोषक तत्वों और पर्यावरणीय स्थितियों के आधार पर, इस फसल को इष्टतम उपज और अधिकतम लाभप्रदता के लिए अनुशंसित किया जाता है।",
+      "Crop Suitability Score": "फसल उपयुक्तता स्कोर",
+      "Strong match": "मजबूत मिलान",
+      "Prediction Probabilities": "भविष्यवाणी संभावनाएं",
+      "Fertilizer endpoint not reachable or returned error.": "उर्वरक एंडपॉइंट पहुंच योग्य नहीं है या त्रुटि लौटाई।",
+      "Outside Range 🔴": "सीमा से बाहर 🔴",
+      "Target Crop": "लक्ष्य फसल",
+      "What crop do you want to grow?": "आप कौन सी फसल उगाना चाहते हैं?",
+      "e.g. Rice, Wheat, Cotton (Optional)": "उदा. चावल, गेहूं, कपास (वैकल्पिक)",
+      "Provide N, P or K to enable fertilizer recommendation": "उर्वरक सिफारिश सक्षम करने के लिए N, P या K प्रदान करें",
+      "Get fertilizer recommendation": "उर्वरक सिफारिश प्राप्त करें",
+      "Calculating...": "गणना हो रही है...",
+      "Get Fertilizer Recommendation": "उर्वरक सिफारिश प्राप्त करें",
+      "Fertilizer Recommendation": "उर्वरक सिफारिश",
+      "Crop:": "फसल:",
+      "Baseline Requirements (kg/ha)": "आधारभूत आवश्यकताएं (किग्रा/हेक्टेयर)",
+      "Current Soil (Measured)": "वर्तमान मिट्टी (मापी गई)",
+      "Suggested Fertilizer Additions": "सुझाए गए उर्वरक जोड़",
+      "kg/ha": "किग्रा/हेक्टेयर"
+    }
+  },
+  mr: {
+    translation: {
+      "Crop Intelligence System": "पीक इंटेलिजन्स सिस्टम",
+      "Optimize your farming with AI-powered recommendations": "एआय-चालित शिफारसींसह आपली शेती ऑप्टिमाइझ करा",
+      "Recommended Crop": "शिफारस केलेली पिक",
+      "Recommended Fertilizer": "शिफारस केलेले खत",
+      "Language": "भाषा",
+      "Please fill in all fields": "कृपया सर्व फील्ड भरा",
+      "Backend not connected or invalid data!": "बॅकएंड कनेक्ट नाही किंवा अवैध डेटा!",
+      "Please upload a CSV, PDF, or Image file.": "कृपया CSV, PDF, किंवा इमेज फाइल अपलोड करा.",
+      "Extracting data...": "डेटा काढत आहे...",
+      "Choose File": "फाइल निवडा",
+      "Data extracted successfully! You can manually fill in any missing fields.": "डेटा यशस्वीरित्या काढला! आपण मॅन्युअली कोणतीही गहाळ फील्ड भरू शकता.",
+      "Failed to extract data from file.": "फाइलमधून डेटा काढण्यात अयशस्वी.",
+      "Optimal pH ✅": "परफेक्ट pH ✅",
+      "Slightly Acidic ⚠️": "किंचित अम्लीय ⚠️",
+      "Slightly Alkaline ⚠️": "किंचित क्षारिय ⚠️",
+      "Outside Range🔴": "रेंजच्या बाहेर🔴",
+      "Ideal Humidity ✅": "आदर्श आर्द्रता ✅",
+      "Check Humidity ⚠️": "आर्द्रता तपासा ⚠️",
+      "Nitrogen (N)": "नायट्रोजन (N)",
+      "Phosphorus (P)": "फॉस्फरस (P)",
+      "Potassium (K)": "पोटॅशियम (K)",
+      "pH Level": "pH स्तर",
+      "Temperature": "तापमान",
+      "Humidity": "आर्द्रता",
+      "Rainfall": "पाऊस",
+      "Auto-fill via Document Scan": "दस्तऐवज स्कॅनद्वारे ऑटो-फिल",
+      "Upload a CSV, report PDF, or image to extract data.": "डेटा काढण्यासाठी CSV, रिपोर्ट PDF, किंवा इमेज अपलोड करा.",
+      "Soil Parameters": "मातीचे पॅरामीटर्स",
+      "Environmental Parameters": "पर्यावरणीय पॅरामीटर्स",
+      "Enter value": "मूल्य प्रविष्ट करा",
+      "Analyzing...": "विश्लेषण करत आहे...",
+      "Get Crop Recommendation": "पिक शिफारस मिळवा",
+      "Based on your soil nutrients and environmental conditions, this crop is recommended for optimal yield and maximum profitability.": "आपल्या मातीच्या पोषक आणि पर्यावरणीय परिस्थितीवर आधारित, हे पिक ऑप्टिमल उत्पादन आणि कमाल नफ्यासाठी शिफारस केले जाते.",
+      "Crop Suitability Score": "पिक उपयुक्तता स्कोर",
+      "Strong match": "जोरदार जुळणी",
+      "Prediction Probabilities": "भविष्यवाणी संभाव्यता",
+      "Fertilizer endpoint not reachable or returned error.": "खत एंडपॉइंट पोहोचण्यायोग्य नाही किंवा त्रुटी परत केली.",
+      "Outside Range 🔴": "रेंजच्या बाहेर 🔴",
+      "Target Crop": "लक्ष्य पिक",
+      "What crop do you want to grow?": "आपण कोणते पिक वाढवू इच्छिता?",
+      "e.g. Rice, Wheat, Cotton (Optional)": "उदा. तांदूळ, गहू, कापूस (पर्यायी)",
+      "Provide N, P or K to enable fertilizer recommendation": "खत शिफारस सक्षम करण्यासाठी N, P किंवा K प्रदान करा",
+      "Get fertilizer recommendation": "खत शिफारस मिळवा",
+      "Calculating...": "गणना करत आहे...",
+      "Get Fertilizer Recommendation": "खत शिफारस मिळवा",
+      "Fertilizer Recommendation": "खत शिफारस",
+      "Crop:": "पिक:",
+      "Baseline Requirements (kg/ha)": "बेसलाइन आवश्यकता (किलो/हेक्टर)",
+      "Current Soil (Measured)": "सध्याची माती (मोजली)",
+      "Suggested Fertilizer Additions": "सूचवलेली खत भर",
+      "kg/ha": "किलो/हेक्टर"
+    }
+  }
+};
+
+i18n
+  // pass the i18n instance to react-i18next.
+  .use(initReactI18next)
+  // init i18next
+  // for all options read: https://www.i18next.com/overview/configuration-options
+  .init({
+    resources,
+    lng: 'en', // language to use, more info here: https://www.i18next.com/overview/configuration-options#languages-namespaces-resources
+    // you can use the i18n.changeLanguage function to change the language manually: https://www.i18next.com/overview/api#changelanguage
+    // if you're using a language detector, do not define the lng option
+
+    interpolation: {
+      escapeValue: false // react already does escaping
+    }
+  });
+
+export default i18n;

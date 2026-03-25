@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./App.css";
 import cropBg from "./crop-bg.jpg";
+import { useTranslation } from "react-i18next";
 
 function CropPage() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     N: "",
     P: "",
@@ -40,7 +42,7 @@ function CropPage() {
 
   const predictCrop = async () => {
     if (!Object.values(formData).every(val => val !== "")) {
-      setError("Please fill in all fields");
+      setError(t("Please fill in all fields"));
       return;
     }
 
@@ -62,7 +64,7 @@ function CropPage() {
       setResult(res.data.crop);
       setProbs(res.data.probs || null);
     } catch (error) {
-      setError("Backend not connected or invalid data!");
+      setError(t("Backend not connected or invalid data!"));
     } finally {
       setLoading(false);
     }
@@ -74,7 +76,7 @@ function CropPage() {
 
     const fileExt = file.name.split('.').pop().toLowerCase();
     if (!['csv', 'pdf', 'png', 'jpg', 'jpeg'].includes(fileExt)) {
-      setError("Please upload a CSV, PDF, or Image file.");
+      setError(t("Please upload a CSV, PDF, or Image file."));
       return;
     }
 
@@ -103,10 +105,10 @@ function CropPage() {
         return newData;
       });
 
-      setUploadSuccess("Data extracted successfully! You can manually fill in any missing fields.");
+      setUploadSuccess(t("Data extracted successfully! You can manually fill in any missing fields."));
       e.target.value = null; // Reset input
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to extract data from file.");
+      setError(err.response?.data?.error || t("Failed to extract data from file."));
     } finally {
       setUploading(false);
     }
@@ -115,29 +117,29 @@ function CropPage() {
   const getStatusIndicator = (nutrient, value) => {
     const numValue = Number(value);
     if (nutrient === "ph") {
-      if (numValue >= 6 && numValue <= 7.5) return { status: "optimal", label: "Optimal pH ✅" };
-      if (numValue >= 5.5 && numValue < 6) return { status: "warning", label: "Slightly Acidic ⚠️" };
-      if (numValue > 7.5) return { status: "warning", label: "Slightly Alkaline ⚠️" };
-      return { status: "alert", label: "Outside Range🔴" };
+      if (numValue >= 6 && numValue <= 7.5) return { status: "optimal", label: t("Optimal pH ✅") };
+      if (numValue >= 5.5 && numValue < 6) return { status: "warning", label: t("Slightly Acidic ⚠️") };
+      if (numValue > 7.5) return { status: "warning", label: t("Slightly Alkaline ⚠️") };
+      return { status: "alert", label: t("Outside Range🔴") };
     }
     if (nutrient === "humidity") {
-      if (numValue >= 40 && numValue <= 70) return { status: "optimal", label: "Ideal Humidity ✅" };
-      return { status: "warning", label: "Check Humidity ⚠️" };
+      if (numValue >= 40 && numValue <= 70) return { status: "optimal", label: t("Ideal Humidity ✅") };
+      return { status: "warning", label: t("Check Humidity ⚠️") };
     }
     return null;
   };
 
   const soilFields = [
-    { name: "N", label: "Nitrogen (N)", unit: "mg/kg", icon: "🌾" },
-    { name: "P", label: "Phosphorus (P)", unit: "mg/kg", icon: "🔵" },
-    { name: "K", label: "Potassium (K)", unit: "mg/kg", icon: "💛" },
-    { name: "ph", label: "pH Level", unit: "pH", icon: "📊" }
+    { name: "N", label: t("Nitrogen (N)"), unit: "mg/kg", icon: "🌾" },
+    { name: "P", label: t("Phosphorus (P)"), unit: "mg/kg", icon: "🔵" },
+    { name: "K", label: t("Potassium (K)"), unit: "mg/kg", icon: "💛" },
+    { name: "ph", label: t("pH Level"), unit: "pH", icon: "📊" }
   ];
 
   const envFields = [
-    { name: "temperature", label: "Temperature", unit: "°C", icon: "🌡️" },
-    { name: "humidity", label: "Humidity", unit: "%", icon: "💧" },
-    { name: "rainfall", label: "Rainfall", unit: "mm", icon: "🌧️" }
+    { name: "temperature", label: t("Temperature"), unit: "°C", icon: "🌡️" },
+    { name: "humidity", label: t("Humidity"), unit: "%", icon: "💧" },
+    { name: "rainfall", label: t("Rainfall"), unit: "mm", icon: "🌧️" }
   ];
 
   return (
@@ -145,7 +147,7 @@ function CropPage() {
       <main className="main-content">
         <div className="form-container">
           <div className="form-card">
-            <h2 className="form-title">Recommended Crop</h2>
+            <h2 className="form-title">{t("Recommended Crop")}</h2>
 
             {/* Upload Section */}
             <div className="upload-section">
@@ -154,8 +156,8 @@ function CropPage() {
                   <span className="upload-icon">📄</span>
                 </div>
                 <div className="upload-content">
-                  <h3 className="upload-title">Auto-fill via Document Scan</h3>
-                  <p className="upload-subtitle">Upload a CSV, report PDF, or image to extract data.</p>
+                  <h3 className="upload-title">{t("Auto-fill via Document Scan")}</h3>
+                  <p className="upload-subtitle">{t("Upload a CSV, report PDF, or image to extract data.")}</p>
                   
                   <label className="upload-btn">
                     <input 
@@ -166,9 +168,9 @@ function CropPage() {
                       disabled={uploading}
                     />
                     {uploading ? (
-                      <span className="uploading-text"><span className="spinner"></span>Extracting data...</span>
+                      <span className="uploading-text"><span className="spinner"></span>{t("Extracting data...")}</span>
                     ) : (
-                      <span className="upload-text">Choose File</span>
+                      <span className="upload-text">{t("Choose File")}</span>
                     )}
                   </label>
                 </div>
@@ -182,7 +184,7 @@ function CropPage() {
             <div className="form-section">
               <div className="section-header">
                 <span className="section-icon">🧪</span>
-                Soil Parameters
+                {t("Soil Parameters")}
               </div>
               <div className="form-grid">
                 {soilFields.map((field) => (
@@ -196,7 +198,7 @@ function CropPage() {
                         id={field.name}
                         name={field.name}
                         type="number"
-                        placeholder="Enter value"
+                        placeholder={t("Enter value")}
                         value={formData[field.name]}
                         onChange={handleChange}
                         className="form-input"
@@ -227,7 +229,7 @@ function CropPage() {
             <div className="form-section">
               <div className="section-header">
                 <span className="section-icon">🌍</span>
-                Environmental Parameters
+                {t("Environmental Parameters")}
               </div>
               <div className="form-grid full">
                 {envFields.map((field) => (
@@ -241,7 +243,7 @@ function CropPage() {
                         id={field.name}
                         name={field.name}
                         type="number"
-                        placeholder="Enter value"
+                        placeholder={t("Enter value")}
                         value={formData[field.name]}
                         onChange={handleChange}
                         className="form-input"
@@ -264,7 +266,7 @@ function CropPage() {
                 className="predict-button"
                 disabled={loading}
               >
-                {loading ? "Analyzing..." : "Get Crop Recommendation"}
+                {loading ? t("Analyzing...") : t("Get Crop Recommendation")}
               </button>
             </div>
           </div>
@@ -277,29 +279,29 @@ function CropPage() {
               backgroundAttachment: 'fixed'
             }}>
               <div className="result-header">
-                <h3 className="result-title crop">Recommended Crop</h3>
+                <h3 className="result-title crop">{t("Recommended Crop")}</h3>
               </div>
               <div className="result-content">
                 <div className="crop-name">{result}</div>
                 <p className="result-description">
-                  Based on your soil nutrients and environmental conditions, this crop is recommended for optimal yield and maximum profitability.
+                  {t("Based on your soil nutrients and environmental conditions, this crop is recommended for optimal yield and maximum profitability.")}
                 </p>
 
                 {/* Suitability Percentage */}
                 <div className="suitability-section">
-                  <div className="suitability-title">Crop Suitability Score</div>
+                  <div className="suitability-title">{t("Crop Suitability Score")}</div>
                   <div className="suitability-bar">
                     <div className="suitability-fill" style={{width: "85%"}}></div>
                   </div>
                   <div style={{fontSize: "0.9rem", color: "#555", marginTop: "8px", display: "flex", justifyContent: "space-between"}}>
-                    <span>Strong match</span>
+                    <span>{t("Strong match")}</span>
                     <span style={{fontWeight: 700, color: "#2d7a3e"}}>85%</span>
                   </div>
                 </div>
 
                 {probs && (
                   <div className="probs">
-                    <h4>Prediction Probabilities</h4>
+                    <h4>{t("Prediction Probabilities")}</h4>
                     <ul>
                       {Object.entries(probs).map(([cropName, p]) => (
                         <li key={cropName}>

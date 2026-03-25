@@ -141,6 +141,23 @@ nav {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
+.language-toggle {
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid transparent;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.language-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
 /* ===== MAIN CONTENT ===== */
 .main-content {
   flex: 1;

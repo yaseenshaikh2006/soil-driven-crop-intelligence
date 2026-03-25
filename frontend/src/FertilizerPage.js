@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./App.css";
 import cropBg from "./crop-bg.jpg";
+import { useTranslation } from "react-i18next";
 
 function FertilizerPage() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     crop: "",
     N: "",
@@ -56,7 +58,7 @@ function FertilizerPage() {
 
       setFertilizerResult(res.data);
     } catch (err) {
-      setError("Fertilizer endpoint not reachable or returned error.");
+      setError(t("Fertilizer endpoint not reachable or returned error."));
     } finally {
       setFertilizerLoading(false);
     }
@@ -68,7 +70,7 @@ function FertilizerPage() {
 
     const fileExt = file.name.split('.').pop().toLowerCase();
     if (!['csv', 'pdf', 'png', 'jpg', 'jpeg'].includes(fileExt)) {
-      setError("Please upload a CSV, PDF, or Image file.");
+      setError(t("Please upload a CSV, PDF, or Image file."));
       return;
     }
 
@@ -97,10 +99,10 @@ function FertilizerPage() {
         return newData;
       });
 
-      setUploadSuccess("Data extracted successfully! You can manually fill in any missing fields.");
+      setUploadSuccess(t("Data extracted successfully! You can manually fill in any missing fields."));
       e.target.value = null; // Reset input
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to extract data from file.");
+      setError(err.response?.data?.error || t("Failed to extract data from file."));
     } finally {
       setUploading(false);
     }
@@ -109,20 +111,20 @@ function FertilizerPage() {
   const getStatusIndicator = (nutrient, value) => {
     const numValue = Number(value);
     if (nutrient === "ph") {
-      if (numValue >= 6 && numValue <= 7.5) return { status: "optimal", label: "Optimal pH ✅" };
-      if (numValue >= 5.5 && numValue < 6) return { status: "warning", label: "Slightly Acidic ⚠️" };
-      if (numValue > 7.5) return { status: "warning", label: "Slightly Alkaline ⚠️" };
-      return { status: "alert", label: "Outside Range 🔴" };
+      if (numValue >= 6 && numValue <= 7.5) return { status: "optimal", label: t("Optimal pH ✅") };
+      if (numValue >= 5.5 && numValue < 6) return { status: "warning", label: t("Slightly Acidic ⚠️") };
+      if (numValue > 7.5) return { status: "warning", label: t("Slightly Alkaline ⚠️") };
+      return { status: "alert", label: t("Outside Range 🔴") };
     }
     if (nutrient === "humidity") {
-      if (numValue >= 40 && numValue <= 70) return { status: "optimal", label: "Ideal Humidity ✅" };
-      return { status: "warning", label: "Check Humidity ⚠️" };
+      if (numValue >= 40 && numValue <= 70) return { status: "optimal", label: t("Ideal Humidity ✅") };
+      return { status: "warning", label: t("Check Humidity ⚠️") };
     }
     return null;
   };
 
   const soilFields = [
-    { name: "N", label: "Nitrogen (N)", unit: "mg/kg", icon: "🌾" },
+    { name: "N", label: t("Nitrogen (N)"), unit: "mg/kg", icon: "🌾" },
     { name: "P", label: "Phosphorus (P)", unit: "mg/kg", icon: "🔵" },
     { name: "K", label: "Potassium (K)", unit: "mg/kg", icon: "💛" },
     { name: "ph", label: "pH Level", unit: "pH", icon: "📊" }
@@ -139,7 +141,7 @@ function FertilizerPage() {
       <main className="main-content">
         <div className="form-container">
           <div className="form-card">
-            <h2 className="form-title">Recommended Fertilizer</h2>
+            <h2 className="form-title">{t("Recommended Fertilizer")}</h2>
 
             {/* Upload Section */}
             <div className="upload-section">
@@ -148,8 +150,8 @@ function FertilizerPage() {
                   <span className="upload-icon">📄</span>
                 </div>
                 <div className="upload-content">
-                  <h3 className="upload-title">Auto-fill via Document Scan</h3>
-                  <p className="upload-subtitle">Upload a CSV, report PDF, or image to extract data.</p>
+                  <h3 className="upload-title">{t("Auto-fill via Document Scan")}</h3>
+                  <p className="upload-subtitle">{t("Upload a CSV, report PDF, or image to extract data.")}</p>
                   
                   <label className="upload-btn">
                     <input 
@@ -160,9 +162,9 @@ function FertilizerPage() {
                       disabled={uploading}
                     />
                     {uploading ? (
-                      <span className="uploading-text"><span className="spinner"></span>Extracting data...</span>
+                      <span className="uploading-text"><span className="spinner"></span>{t("Extracting data...")}</span>
                     ) : (
-                      <span className="upload-text">Choose File</span>
+                      <span className="upload-text">{t("Choose File")}</span>
                     )}
                   </label>
                 </div>
@@ -176,17 +178,17 @@ function FertilizerPage() {
             <div className="form-section" style={{marginBottom: "20px"}}>
               <div className="section-header">
                 <span className="section-icon">🌱</span>
-                Target Crop
+                {t("Target Crop")}
               </div>
               <div className="form-group" style={{maxWidth: "100%"}}>
                 <label htmlFor="crop" className="form-label">
-                  What crop do you want to grow?
+                  {t("What crop do you want to grow?")}
                 </label>
                 <input
                   id="crop"
                   name="crop"
                   type="text"
-                  placeholder="e.g. Rice, Wheat, Cotton (Optional)"
+                  placeholder={t("e.g. Rice, Wheat, Cotton (Optional)")}
                   value={formData.crop}
                   onChange={handleChange}
                   className="form-input"
@@ -199,7 +201,7 @@ function FertilizerPage() {
             <div className="form-section">
               <div className="section-header">
                 <span className="section-icon">🧪</span>
-                Soil Parameters
+                {t("Soil Parameters")}
               </div>
               <div className="form-grid">
                 {soilFields.map((field) => (
@@ -213,7 +215,7 @@ function FertilizerPage() {
                         id={field.name}
                         name={field.name}
                         type="number"
-                        placeholder="Enter value"
+                        placeholder={t("Enter value")}
                         value={formData[field.name]}
                         onChange={handleChange}
                         className="form-input"
@@ -244,7 +246,7 @@ function FertilizerPage() {
             <div className="form-section">
               <div className="section-header">
                 <span className="section-icon">🌍</span>
-                Environmental Parameters
+                {t("Environmental Parameters")}
               </div>
               <div className="form-grid full">
                 {envFields.map((field) => (
@@ -258,7 +260,7 @@ function FertilizerPage() {
                         id={field.name}
                         name={field.name}
                         type="number"
-                        placeholder="Enter value"
+                        placeholder={t("Enter value")}
                         value={formData[field.name]}
                         onChange={handleChange}
                         className="form-input"
@@ -284,10 +286,10 @@ function FertilizerPage() {
                     onClick={getFertilizer}
                     className="fertilizer-button"
                     disabled={disabled}
-                    title={disabled ? 'Provide N, P or K to enable fertilizer recommendation' : 'Get fertilizer recommendation'}
+                    title={disabled ? t('Provide N, P or K to enable fertilizer recommendation') : t('Get fertilizer recommendation')}
                     aria-busy={fertilizerLoading}
                   >
-                    {fertilizerLoading ? 'Calculating...' : 'Get Fertilizer Recommendation'}
+                    {fertilizerLoading ? t('Calculating...') : t('Get Fertilizer Recommendation')}
                   </button>
                 );
               })()}
@@ -302,18 +304,18 @@ function FertilizerPage() {
               backgroundAttachment: 'fixed'
             }}>
               <div className="result-header">
-                <h3 className="result-title fertilizer">Fertilizer Recommendation</h3>
+                <h3 className="result-title fertilizer">{t("Fertilizer Recommendation")}</h3>
               </div>
               <div className="result-content">
                 <h4 style={{marginBottom: 16, color: "#2d7a3e", fontSize: "1.2rem"}}>
-                  Crop: <span style={{fontWeight: 700}}>{fertilizerResult.crop || '—'}</span>
+                  {t("Crop:")} <span style={{fontWeight: 700}}>{fertilizerResult.crop || '—'}</span>
                 </h4>
 
                 {/* Baseline vs Current Soil */}
                 <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 25}}>
                   <div className="info-box" style={{background: "#e8f5e9", padding: 16, borderRadius: 12}}>
                     <strong style={{color: "#2d7a3e", display: "flex", alignItems: "center", gap: 8, marginBottom: 12}}>
-                      📈 Baseline Requirements (kg/ha)
+                      📈 {t("Baseline Requirements (kg/ha)")}
                     </strong>
                     <ul style={{listStyle: "none", padding: 0, margin: 0}}>
                       {Object.entries(fertilizerResult.requirements_baseline_kg_per_ha || {}).map(([k, v]) => (
@@ -327,7 +329,7 @@ function FertilizerPage() {
 
                   <div className="info-box" style={{background: "#f0f9ff", padding: 16, borderRadius: 12}}>
                     <strong style={{color: "#2d7a3e", display: "flex", alignItems: "center", gap: 8, marginBottom: 12}}>
-                      💧 Current Soil (Measured)
+                      💧 {t("Current Soil (Measured)")}
                     </strong>
                     <ul style={{listStyle: "none", padding: 0, margin: 0}}>
                       {Object.entries(fertilizerResult.current_soil || {}).map(([k, v]) => (
@@ -343,7 +345,7 @@ function FertilizerPage() {
                 {/* Suggested Additions */}
                 <div className="fertilizer-table">
                   <strong style={{display: "flex", alignItems: "center", gap: 8, marginBottom: 16, color: "#2d7a3e", fontSize: "1.1rem"}}>
-                    🌿 Suggested Fertilizer Additions
+                    🌿 {t("Suggested Fertilizer Additions")}
                   </strong>
                   <div className="nutrient-rows">
                     {Object.entries(fertilizerResult.suggested_additions || {}).map(([nutrient, info]) => (
