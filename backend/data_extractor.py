@@ -11,77 +11,65 @@ def extract_from_text(text):
     """
     data = {}
     
+    # Pre-process text to remove row numbers like "1 ", "1.", "1)" at the beginning of a line if followed by text
+    text = re.sub(r'(?m)^\s*\d+[\s\.\)]+(?=[A-Za-z])', '', text)
+    
+    # 1. Strict Patterns: Require value to be on the same line as the parameter name
     strict_patterns = {
-        'N': r'(?i)\b(?:n|nitrogen)\b\s*[:=\-]?\s*(\d+(?:\.\d+)?)',
-        'P': r'(?i)\b(?:p|phosphorus)\b\s*[:=\-]?\s*(\d+(?:\.\d+)?)',
-        'K': r'(?i)\b(?:k|potassium)\b\s*[:=\-]?\s*(\d+(?:\.\d+)?)',
-        'temperature': r'(?i)\b(?:temperature|temp)\b\s*[:=\-]?\s*(\d+(?:\.\d+)?)',
-        'humidity': r'(?i)\b(?:humidity)\b\s*[:=\-]?\s*(\d+(?:\.\d+)?)',
-        'ph': r'(?i)\b(?:ph|soil\s*ph)\b\s*[:=\-]?\s*(\d+(?:\.\d+)?)',
-        'rainfall': r'(?i)\b(?:rainfall)\b\s*[:=\-]?\s*(\d+(?:\.\d+)?)'
+        'N': r'(?i)\b(?:nitrogen|\bavail(?:able)?\s*n\b|\bn\b|no3[\-\s]*n|nitrate)\b[^\d\n]{0,80}?(\d+(?:\.\d+)?)',
+        'P': r'(?i)\b(?:phosphorus|\bavail(?:able)?\s*p\b|p2o5|p205|\bp\b|weak\s+bray)\b[^\d\n]{0,80}?(\d+(?:\.\d+)?)',
+        'K': r'(?i)\b(?:potassium|\bavail(?:able)?\s*k\b|k2o|k20|\bk\b)\b[^\d\n]{0,80}?(\d+(?:\.\d+)?)',
+        'temperature': r'(?i)\b(?:temperature|temp)\b[^\d\n]{0,80}?(\d+(?:\.\d+)?)',
+        'humidity': r'(?i)\b(?:humidity|hum|rh)\b[^\d\n]{0,80}?(\d+(?:\.\d+)?)',
+        'ph': r'(?i)\b(?:soil\s*ph|ph)\b(?!\s*[:.]?\s*\(?\d{3,})[^\d\n]{0,80}?(\d+(?:\.\d+)?)',
+        'rainfall': r'(?i)\b(?:rainfall|rain)\b[^\d\n]{0,80}?(\d+(?:\.\d+)?)'
     }
     
-    loose_patterns = {
-        'N': r'nitrate[\s\-]*n|nitrogen',
-        'P': r'phosphorus|\bp1\b|\bp2\b|weak\s+bray',
-        'K': r'potassium',
-        'temperature': r'temperature|temp',
-        'humidity': r'humidity',
-        'ph': r'soil\s*ph|\bph\b',
-        'rainfall': r'rainfall'
+    # 2. Vertical Patterns: Allow traversing newlines to find values
+    vertical_patterns = {
+        'N': r'(?i)\b(?:nitrogen|\bavail(?:able)?\s*n\b|\bn\b|no3[\-\s]*n|nitrate)\b[^\d]{0,80}?(\d+(?:\.\d+)?)',
+        'P': r'(?i)\b(?:phosphorus|\bavail(?:able)?\s*p\b|p2o5|p205|\bp\b|weak\s+bray)\b[^\d]{0,80}?(\d+(?:\.\d+)?)',
+        'K': r'(?i)\b(?:potassium|\bavail(?:able)?\s*k\b|k2o|k20|\bk\b)\b[^\d]{0,80}?(\d+(?:\.\d+)?)',
+        'temperature': r'(?i)\b(?:temperature|temp)\b[^\d]{0,80}?(\d+(?:\.\d+)?)',
+        'humidity': r'(?i)\b(?:humidity|hum|rh)\b[^\d]{0,80}?(\d+(?:\.\d+)?)',
+        'ph': r'(?i)\b(?:soil\s*ph|ph)\b(?!\s*[:.]?\s*\(?\d{3,})[^\d]{0,80}?(\d+(?:\.\d+)?)',
+        'rainfall': r'(?i)\b(?:rainfall|rain)\b[^\d]{0,80}?(\d+(?:\.\d+)?)'
     }
-    
-    for key in strict_patterns:
-        match = re.search(strict_patterns[key], text)
-        if match:
-            val = float(match.group(1))
-            if key == 'ph':
-                if val == 1.0:
-                    pass # skip false positive 1:1 ratio
-                else:
-                    if 14.0 < val < 140.0:
-                        val = val / 10.0
-                    data[key] = val
-                    continue
-            else:
-                data[key] = val
+
+    for k in strict_patterns.keys():
+        data[k] = None
+
+    # Helper function to apply a dictionary of patterns
+    def apply_patterns(patterns_dict):
+        for key, pattern in patterns_dict.items():
+            if data.get(key) is not None:
                 continue
-                
-        if key in loose_patterns:
-            # Find the keyword match first
-            keyword_match = re.search(r'(?i)\b(?:' + loose_patterns[key] + r')\b', text)
-            if keyword_match:
-                # Extract the next 450 characters after the keyword
-                start_idx = keyword_match.end()
-                chunk = text[start_idx:start_idx+450]
-                
-                # Scrub known measurement ratios and noise from the chunk so we don't extract them by accident
-                noise_patterns = r'(?i)(?:1\s*:\s*[17]|0\s*-\s*6|100g|meq|ppm|lbs/a|mg/kg|cm|\b1:1\b|\bp1\b|\bp2\b)'
-                clean_chunk = re.sub(noise_patterns, ' ', chunk)
-                
-                # Find all numbers within this clean chunk
-                number_matches = re.finditer(r'\b(\d+(?:\.\d+)?)\b', clean_chunk)
-                
-                found = False
-                for m in number_matches:
+            
+            matches = re.finditer(pattern, text)
+            for m in matches:
+                try:
                     val = float(m.group(1))
                     if key == 'ph':
-                        if 14.0 < val < 140.0:
+                        if val == 1.0:
+                            continue # skip false positive 1:1
+                        if 14.0 < val <= 140.0:
                             val = val / 10.0
                         if 1.0 < val < 14.0:
                             data[key] = val
-                            found = True
                             break
                     else:
-                        if val > 1.0: # skip potential 1:1 or other random low numbers
+                        if val > 0:
+                            # Skip small integers likely to be row numbers in vertical mode
+                            if val in [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0] and patterns_dict == vertical_patterns:
+                                continue
                             data[key] = val
-                            found = True
                             break
-                if found:
+                except Exception:
                     continue
-                    
-        data[key] = None
-            
+
+    apply_patterns(strict_patterns)
+    apply_patterns(vertical_patterns)
+    
     return data
 
 def extract_from_csv(file_bytes):
